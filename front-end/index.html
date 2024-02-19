@@ -1,0 +1,194 @@
+<html>
+  <head>
+
+    <!-- Task 1 (1 minute): Using CSS, please make the background a tiny bit darker -->
+
+    <!-- Task 2 (1 minute): Using CSS, when the mouse hovers over a button, it should turn a bit lighter
+          with a smooth transition of 0.5 seconds -->
+
+    <!-- pendiente: Task 3 (1 minute): Every time we click on the button, there's an annoying blue line that appears.
+          Make it so that this line doesn't appear anymore -->
+
+    <!-- Task 4 (2 minutes): Look at the line that says "sb.onclick = setup". We want it so when we click
+          the start button, the function setup() gets called, but nothing is happening.
+          Explain why in a comment above the line "sb.onclick = setup", and fix the issue.
+          Note that we don't want to define the onclick event in HTML. We want to define it dynamically in Javascript.  -->
+
+    <!-- Task 5 (15 minutes): Implement the following game:
+          A. When the player clicks START, after a delay of 600 milliseconds, 100 buttons are placed 
+             inside the element with id #container.
+             The buttons are labeled 1, 2, 3, ..., 99, 100 but they're randomly shuffled, so they're not in order.
+             Use the provided "shuffle" function to shuffle the array of numbers.
+             Note that shuffle() calls swap(), which is not implemented. Implement swap().
+             The buttons should be styled with the .guess class that's already defined.
+          B. Immediately when the 100 buttons are placed on the page, the label on the START button changes to 
+             a random number between 1 and 100 (inclusive). 
+             The player has to find the corresponding button within the 100 shuffled buttons and click it as fast as possible
+          D. When the player clicks it, if the correct button was clicked, the START button's text 
+             changes to display the average time-to-click of the last 3 runs, in seconds. 
+             If the wrong button was clicked, nothing happens.
+             If there haven't been 3 runs yet, show the average available.
+          E. The player clicks the START button again, and the 100 buttons are shuffled again, for another round.  -->
+
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 18px;
+        line-height: 2rem;
+        padding: 1rem;
+        color: hsl(210, 2%, 90%);
+        background: hsl(210, 4%, 5%); /* mas oscuro*/
+      }
+
+      button {
+        font-size: 18px;
+        padding: 1.0rem;
+        border-radius: 0.5rem;
+        border-width: 1px;
+        background: hsl(210, 10%, 20%);
+        color: hsl(210, 0%, 95%);
+        margin: 0.25rem 0.25rem;
+        transition: ease all 0.5;
+      }
+
+      button:hover {
+        background: hsl(210, 10%, 25%);
+        cursor: pointer;
+      }
+
+      button#start {
+        width: 8rem;
+      }
+
+      button.guess {
+        width: 4rem;
+        background: hsl(210, 60%, 40%);
+      }
+    </style>
+
+<script>
+
+let averageTimes = [];
+  let runCount = 0;  // Agregada la declaración de la variable
+
+    
+    function swap(arr, i, j) {
+      // Implementación de la función de intercambio
+      var temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+    }
+  
+    function shuffle(arr) {
+      var i, j;
+      for (i = arr.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        swap(arr, i, j);
+      }
+      return arr;
+    }
+  
+    function getRandomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  
+    function startGame() {
+      let container = document.getElementById('container');
+      let startButton = document.getElementById('start');
+  
+      // Vaciar el contenedor
+      container.innerHTML = '';
+  
+      // Crear un array de números del 1 al 100
+      let numbers = Array.from({ length: 100 }, (_, i) => i + 1);
+  
+      // Barajar los números
+      shuffle(numbers);
+  
+      // Crear y añadir botones al contenedor
+      numbers.forEach((number) => {
+        let button = document.createElement('button');
+        button.textContent = number;
+        button.className = 'guess';
+        button.onclick = checkGuess;
+        container.appendChild(button);
+      });
+  
+      // Cambiar el texto del botón de inicio
+      startButton.textContent = getRandomNumber(1, 100);
+  
+      // Registrar el tiempo de inicio
+      let startTime = Date.now();
+  
+      // Después de 600 milisegundos, realizar la acción del juego
+      setTimeout(() => {
+        // Cambiar el texto del botón de inicio nuevamente después del retraso
+        startButton.textContent = getRandomNumber(1, 100);
+  
+        // Calcular el tiempo transcurrido
+        let elapsedTime = (Date.now() - startTime) / 1000; // convertir a segundos
+        averageTimes.push(elapsedTime);
+        runCount++;
+  
+        // Si se han realizado al menos 3 corridas, mostrar el tiempo promedio
+        if (runCount >= 3) {
+          let average = calculateAverage(averageTimes);
+          startButton.textContent = `Average: ${average.toFixed(2)}s`;
+        }
+  
+      }, 600);
+    }
+  
+
+
+
+    function checkGuess() {
+        
+    let clickedButton = this;
+    let startButton = document.getElementById('start');
+
+    // Obtener el texto del botón clicado
+    let clickedNumber = clickedButton.textContent;
+
+    // Obtener el texto del botón de inicio
+    let targetNumber = startButton.textContent;
+
+    // Comparar los números
+    if (clickedNumber === targetNumber) {
+     
+      alert('¡Correcto!');
+
+    } else {
+      
+      alert('Incorrecto');
+
+     
+
+    }
+  }
+
+
+  
+    document.addEventListener('DOMContentLoaded', function () {
+      let times = [];
+      let c = document.getElementById('container');
+      let sb = document.getElementById('start');
+      sb.onclick = startGame;  // Cambiado de setup a startGame
+    });
+  </script>
+  
+
+  </head>
+
+  <body>
+    <div>
+      <button id='start'>START</button>
+    </div>
+    <div id='container'>
+      Press START to begin
+    </div>
+    <div>
+    </div>
+  </body>
+
+</html>

@@ -1,0 +1,21 @@
+
+
+@api = http://localhost:3000/api/
+
+###login 
+POST {{api}}/auth/login
+###login 
+POST {{api}}/auth/register
+
+### books
+POST {{api}}/books
+GET {{api}}/books
+PUT {{api}}/books
+DELETE {{api}}/books
+
+###loans
+POST {{api}}/loans/userId/bookId
+PUT {{api}}/loans/userId/bookId
+
+###purchase
+POST {{api}}/purchase
